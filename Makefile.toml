@@ -1,0 +1,20 @@
+extend = "target/rust-driver-makefile.toml"
+
+[env]
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[config]
+load_script = '''
+#!@rust
+//! ```cargo
+//! [dependencies]
+//! wdk-build = { path = "../../../../windows-drivers-rs/crates/wdk-build" }
+//! ```
+#![allow(unused_doc_comments)]
+
+wdk_build::cargo_make::load_rust_driver_makefile()?
+'''
+
+[tasks.build]
+env = { "RUSTFLAGS" = "--cfg no_global_oom_handling" }
+args = ["+nightly", "build", "-Z", "build-std=core,alloc", "--target", "${CARGO_MAKE_CRATE_TARGET_TRIPLE}", "--verbose"]

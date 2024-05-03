@@ -1,0 +1,54 @@
+;===================================================================
+; Sample KMDF Driver
+; Copyright (c) Microsoft Corporation
+;===================================================================
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = NetService
+ClassGuid   = {4d36e974-e325-11ce-bfc1-08002be10318}
+Provider    = %ProviderString%
+PnpLockDown = 1
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskId1%,,,""
+
+[SourceDisksFiles]
+no_global_oom.sys = 1,,
+
+; ================= Install section =================
+
+[Manufacturer]
+%StdMfg%=Standard,NT$ARCH$.10.0...16299
+
+[Standard.NT$ARCH$.10.0...16299]
+%DeviceDesc%=NoGlobalOomDevice, root\NO_GLOBAL_OOM_HW_ID
+
+[NoGlobalOomDevice.NT$ARCH$]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+no_global_oom.sys
+
+; ================= Service installation =================
+[NoGlobalOomDevice.NT$ARCH$.Services]
+AddService = NoGlobalOomService, %SPSVCINST_ASSOCSERVICE%, No_Global_Oom_Service_Install
+
+[No_Global_Oom_Service_Install]
+DisplayName    = %ServiceDesc%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START 
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\no_global_oom.sys
+
+; ================= Strings =================
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+ProviderString         = "Masahiro Kozuka"
+StdMfg                 = "(Standard system devices)"
+DiskId1                = "No Global Oom Installation Disk #1"
+DeviceDesc             = "No Global Oom Rust Driver"
+ServiceDesc            = "No Global Oom Rust Service"

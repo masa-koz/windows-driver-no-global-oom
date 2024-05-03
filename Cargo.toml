@@ -1,0 +1,26 @@
+[package]
+name = "no-global-oom"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+lto = true # optional setting to enable Link Time Optimizations
+
+[profile.release]
+panic = "abort"
+lto = true # optional setting to enable Link Time Optimizations
+
+[dependencies]
+wdk-alloc = { path = "../windows-drivers-rs/crates/wdk-alloc" }
+wdk-panic = { path = "../windows-drivers-rs/crates/wdk-panic" }
+wdk-sys = { path = "../windows-drivers-rs/crates/wdk-sys" }
+
+[build-dependencies]
+wdk-build = { path = "../windows-drivers-rs/crates/wdk-build" }
+
+[package.metadata.wdk]
